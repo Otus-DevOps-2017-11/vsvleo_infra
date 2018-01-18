@@ -35,3 +35,12 @@ Host internalhost
 Файлы:
 **krista\_test\_vpn-10855.ovpn** - Файл конфигураций для создания клиента
 **setupvpn.sh** - Скрипт для установки OpenVPN на GCP инстанс.
+===
+
+### Домашнее задание 06
+#### Скрипт установки **ruby**
+01. install_ruby.sh 
+#### Скрипт установки **mongodb**
+02. install_mongodb.sh
+#### Скрипт скачивания и деплоя приложения
+03. deploy.sh
