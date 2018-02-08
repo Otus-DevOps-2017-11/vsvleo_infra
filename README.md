@@ -154,3 +154,47 @@ ssh -i ~/.ssh/appuser appuser@xxx.xxx.xxx.xxx
 #### Использование внешних модулей
 Выдавало ошибку на параметр name = [storage-bucket-test... <br/>
 Изменил на storage-bucket-vlasenko
+
+---
+
+### Домашнее задание 10
+#### Установка ansible
+Для установки ansible, предварительно потребовалость установить pip
+```
+sudo apt install python-pip
+pip install --upgrade pip
+
+```
+Установка самого ansible
+```
+pip install ansible>=2.4
+ansible --version
+```
+#### Используемые файлы
+ansible.cfg - основной конфигурационный файл ansible. Указывается путь до рабочего каталога, а так же описываются
+параметры доступа на инстанс, с помощью inventory файла.<br/>
+invertory - файл с описанием хостов. Может хранить подробную информацию для доступа на хост, может хранить только 
+адреса хостов, если даные для доступа указаны в ansible.cfg<br/>
+invertory.yml - вариант, аналогичный inventory файлу, только написан на yaml
+#### Файл inventory
+Однострочные настройки для каждого хоста, например:
+```
+appserver ansible_host=35.195.186.154 ansible_user=appuser ansible_private_key_file=~/.ssh/ appuser
+```
+#### Некоторые примеры запуска ansible
+Проверка подключения к хосту с идентификатором appserver, определенном в invertory файле, выполняется пинг хоста
+```
+ansible appserver -i ./inventory -m ping
+```
+Выполнение команд стороне хоста, указывается только идентификатор хоста, остальные данные берутся из ansible.cfg
+```
+ansible dbserver -m command -a uptime
+```
+Проверка хостов во всех группах, указанных в yaml файле
+```
+ansible all -m ping -i inventory.yml
+```
+Запуск команд на хостах, в группе app, через shell
+```
+ansible app -m shell -a 'ruby -v; bundler -v'
+```
