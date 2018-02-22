@@ -1,0 +1,35 @@
+---
+- name: install db
+  hosts: all
+  become: true
+  tasks:
+  # Добавление ключа
+  - name: add apt-key
+    apt_key:
+      id: EA312927
+      keyserver: hkp://keyserver.ubuntu.com
+
+  # Добавление репозитория
+  - name: add repo
+    apt_repository:
+      repo: deb http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.2 multiverse 
+      state: present
+
+  - name: Run the equivalent of "apt-get update" as a separate step
+    apt:
+      update_cache: yes
+
+  - name: Install the package "mongodb"
+    apt:
+      name: mongodb-org
+      state: present
+
+  - name: Make sure a service is running
+    systemd: 
+      state=started 
+      name=mongod
+
+  - name: enable service mongod
+    systemd:
+      name: mongod
+      enabled: yes

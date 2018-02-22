@@ -48,6 +48,12 @@ setupvpn.sh - Скрипт для установки OpenVPN на GCP инста
 #### Скрипт скачивания и деплоя приложения
 03. deploy.sh
 
+### Некоторые команды работы с packer
+```
+packer validate ubuntu16.json - проверка шаблона
+packer build ubuntu16.json - запуск процесса сборки образа
+```
+
 ---
 
 ### Домашнее задание 07
@@ -198,3 +204,40 @@ ansible all -m ping -i inventory.yml
 ```
 ansible app -m shell -a 'ruby -v; bundler -v'
 ```
+
+### Домашнее задание 11
+#### Настройки
+Необходимо прописать IP адреса инстансов к соответствующим группам, в файле ansible/hosts/inventory
+Прописать внутренний IP адрес инстанса reddit-db для переменной db_host в основном файле сценария
+#### Один плейбук c одним сценарием в reddit_app
+Запуск сценария выполняется по отдельности для каждого тега, в данном случае:
+```
+ansible-playbook reddit_app_one_play.yml --check --limit db --tags db-tag
+ansible-playbook reddit_app_one_play.yml --check --limit app --tags app-tag
+ansible-playbook reddit_app_one_play.yml --check --limit app --tags deploy-tag
+```
+#### Один плейбук с несколькими сценариями в reddit_app
+Позволяет запускать сценарий без указания параметра "--limit", с указанием в качесте файла сценария 
+reddit_app_multiple_plays.yml, как в примере выше - последовательно, так и одной командой:
+```
+ansible-playbook reddit_app_multiple_plays.yml
+```
+### Несколько плейбуков
+Каждый сценарий можно разместить в отдельном файле и подключить как библиотеку в головном, применив 
+команду *import_playbook*<br/>
+Получились файлы:
+```
+db.yml - настройки инстанса reddit-db
+app.yml - настройки инстанса reddit-app
+deploy.yml - установка и запуск сервиса puma
+site.yml - головной файл для запуска сценариев
+```
+Запуск выполняется командой:
+```
+ansible-playbook site.yml
+```
+#### Замена скриптов в packer на сценарии ansible
+Файлы с плейбуками разместил в папке packer/ansible/<br/>
+Для истории, старые файлы app.json и db.json переименовал в app_old.json и db_old.json, соответственно.<br/>
+
+Помимо указанных в ДЗ ссылок, пользовался еще данными по ссылке http://docs.w3cub.com/ansible/
